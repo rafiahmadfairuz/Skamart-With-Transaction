@@ -1,0 +1,96 @@
+Sedikit penjelasan mengapa kenapa saya menggunakan ini :
+
+- <?php session_start() ?>  = ini digunakan
+
+- require_once "Components/Head-User.php"; = ini bertujuan memisah misah komponen ke folder tersendiri, lalu dipanggil di file lain yang butuh komponen ini.Tujuannya biar bisa lebih rapi 
+  saat digunakan di file lain, jadi terlihat tidak panjang kodenya. Lalu lebih mudah dicari bila ingin mengganti
+
+- <?php unset($_SESSION['errors']); ?> =
+
+- require_once 'Controllers/productcontroller.php'; = memanggil file ini biar function didalamnya bisa dipakaai di file lain / dipanggil
+
+
+- $stmt->execute();
+Digunakan untuk mengeksekusi pernyataan SQL yang sudah dipersiapkan sebelumnya. Eksekusi ini mengirimkan query ke database dan memprosesnya.
+
+- $result = $stmt->get_result();
+Mengambil hasil dari query yang sudah dijalankan. Objek hasil ini berupa result set (kumpulan data hasil query).
+
+- return $result;
+Mengembalikan hasil query agar bisa digunakan di tempat lain (misalnya untuk menampilkan data di halaman web atau melakukan operasi lebih lanjut).
+biasanya menggunakan 3 kombinasi kode ini agar memastikan bahwa query SQL diproses dengan aman (menghindari SQL Injection) dan hasil query bisa diakses untuk diproses lebih lanjut.
+
+
+- $sql .= " AND mb.nama_barang LIKE '%" . $conn->real_escape_string($keyword) . "%'";
+Bagian ini adalah filter pencarian menggunakan kata kunci (keyword).
+LIKE '%keyword%':
+Digunakan untuk mencocokkan pola teks di kolom database.
+Misalnya, jika pengguna mencari kata "laptop", query akan mencari semua data yang memiliki kata "laptop" di nama barang, baik di awal, tengah, maupun akhir.
+
+
+- $conn->real_escape_string($keyword):
+Melindungi query dari SQL Injection dengan meng-escape karakter spesial dari input pengguna.
+Tanpa ini, input seperti ' OR 1=1-- dapat menyebabkan kebocoran data atau kerusakan database.
+
+
+- Penggunaan WHERE 1=1
+WHERE 1=1 adalah teknik umum untuk menyederhanakan proses membangun query dinamis.
+Secara logika, 1=1 selalu benar, jadi tidak memengaruhi hasil query.
+Menghindari logika tambahan saat menambahkan filter query.
+Misalnya:
+php
+Copy code
+if (!empty($minHarga)) {
+    $sql .= " AND mg.harga >= " . intval($minHarga);
+}
+Filter tambahan seperti AND mg.harga >= ... bisa langsung ditambahkan tanpa harus memeriksa apakah itu filter pertama atau bukan.
+
+
+
+- $stmt = $conn->prepare($sql);
+Membuat prepared statement untuk query SQL.
+Prepared statements lebih aman karena parameter input pengguna (seperti $id) tidak dimasukkan langsung ke dalam query, sehingga mencegah SQL Injection.
+
+
+- $stmt->bind_param("i", $id);
+Mengikat nilai variabel $id ke placeholder dalam query (?).
+"i" menunjukkan tipe data variabel (di sini i berarti integer). kalau ii nya dua berarti nanti yang bind ke sql nya ada 2 variabel
+
+
+- $stmt->execute();
+Menjalankan query yang sudah dipersiapkan.
+
+
+- $result = $stmt->get_result();
+Mengambil hasil query.
+
+
+- $product = $result->fetch_assoc();
+Mengambil satu baris data dari hasil query dalam bentuk associative array.
+Berguna untuk mendapatkan detail produk tertentu.
+
+
+- $stmt->close();
+Menutup prepared statement untuk membebaskan sumber daya.
+
+
+- return $product;
+Mengembalikan data produk agar bisa digunakan di tempat lain.
+
+(PENTING BROOO) #@#@#@#
+Kenapa menggunakan prepared statements?
+Untuk meningkatkan keamanan dan efisiensi:
+Mencegah SQL Injection dengan memisahkan logika query dan data input.
+Database dapat mengoptimalkan prepared statement yang sering digunakan.
+
+
+- json_encode() digunakan untuk mengubah variabel PHP (seperti array, objek, atau nilai) menjadi format JSON 
+
+
+
+
+
+
+
+
+
